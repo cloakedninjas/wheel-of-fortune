@@ -82,8 +82,6 @@ WheelOfFortune.prototype = {
     this.ctx.font = '32px Arial';
     this.ctx.fillText(this.getNumberFromRotation(), 20, 40);
 
-    this.getNumberFromRotation();
-
     window.requestAnimationFrame(this.render.bind(this));
   },
 
