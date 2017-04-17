@@ -8,9 +8,13 @@ html, body {
 }
 
 h1 {
-
+    text-align: center;
 }
 
 canvas {
     display: block;
+}
+
+.wrapper {
+    padding: 20px;
 }

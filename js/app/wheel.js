@@ -1,16 +1,34 @@
 'use strict';
 
-define(['jquery', 'underscore', 'backbone'], function ($, _, Backbone) {
+define(['jquery', 'underscore', 'backbone', 'text!templates/wheel.html'], function ($, _, Backbone, templateHTML) {
   var WheelView = Backbone.View.extend({
 
-    el: $('#main'),
+    template: _.template(templateHTML),
 
-    initialize: function () {
-      this.segmentNum = segments;
+    items: null,
+    numOfSegments: 0,
+    canvas: null,
+    ctx: null,
+    centre: {
+      x: 0,
+      y: 0
+    },
+    arcSize: 0,
+    rotation: 0,
+    wheelRadius: 0,
+    generatedWheel: null,
+    velocity: 0,
+
+    initialize: function (items) {
+      this.items = items;
+      this.numOfSegments = items.length;
+
+      this.render();
+
       this.canvas = document.getElementById('wheel');
       this.ctx = this.canvas.getContext('2d');
 
-      this.arcSize = WheelView.PI_2 / this.segmentNum;
+      this.arcSize = WheelView.PI_2 / this.numOfSegments;
 
       this.canvas.width = window.innerWidth * window.devicePixelRatio;
       this.canvas.height = window.innerHeight * window.devicePixelRatio;
@@ -25,35 +43,27 @@ define(['jquery', 'underscore', 'backbone'], function ($, _, Backbone) {
         this.canvas.style.height = window.innerHeight + 'px';
       }
 
-      this.generateLabels();
+      this.shuffle(this.items);
       this.generateWheel();
 
-      this.render();
-
       this.canvas.addEventListener('click', this.spin.bind(this));
+
+      this.animate();
     },
 
     ROTATION_SPEED: 0.05,
-
-    segmentNum: 0,
-    canvas: null,
-    ctx: null,
-    centre: {
-      x: 0,
-      y: 0
-    },
-    arcSize: 0,
-    rotation: 0,
-    wheelRadius: 0,
-    generatedWheel: null,
-    labels: [],
-    velocity: 0,
 
     spin: function () {
       this.velocity = 100;
     },
 
     render: function () {
+      this.$el.html(this.template);
+      document.getElementById('main').appendChild(this.el);
+      return this;
+    },
+
+    animate: function () {
       this.ctx.save();
 
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -85,15 +95,7 @@ define(['jquery', 'underscore', 'backbone'], function ($, _, Backbone) {
       this.ctx.font = '32px Arial';
       this.ctx.fillText(this.getNumberFromRotation(), 20, 40);
 
-      window.requestAnimationFrame(this.render.bind(this));
-    },
-
-    generateLabels: function () {
-      for (var i = 0; i < this.segmentNum; i++) {
-        this.labels[i] = i + 1;
-      }
-
-      this.shuffle(this.labels);
+      window.requestAnimationFrame(this.animate.bind(this));
     },
 
     generateWheel: function () {
@@ -106,7 +108,7 @@ define(['jquery', 'underscore', 'backbone'], function ($, _, Backbone) {
       canvas.width = this.wheelRadius * 2;
       canvas.height = this.wheelRadius * 2;
 
-      for (var i = 0; i < this.segmentNum; i++) {
+      for (var i = 0; i < this.numOfSegments; i++) {
         var arcEnd = arcProgression + this.arcSize;
 
         // draw segments
@@ -128,7 +130,7 @@ define(['jquery', 'underscore', 'backbone'], function ($, _, Backbone) {
         ctx.textAlign = "right";
         ctx.textBaseline = "middle";
         ctx.font = '16px Arial';
-        ctx.fillText(this.labels[i], 0, 0);
+        ctx.fillText(this.items[i], 0, 0);
 
         ctx.restore();
 
@@ -164,7 +166,7 @@ define(['jquery', 'underscore', 'backbone'], function ($, _, Backbone) {
 
     getNumberFromRotation: function () {
       var i = Math.floor(this.rotation / this.arcSize);
-      return this.labels[this.labels.length - 1 - i];
+      return this.items[this.numOfSegments - 1 - i];
     },
 
     /**
