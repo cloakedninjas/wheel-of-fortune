@@ -7,7 +7,9 @@ define(['jquery', 'underscore', 'backbone', 'text!templates/index.html'],
         template: _.template(templateHTML),
         events: {
           'change input': 'handleFileSelect',
-          'click button': 'handleFormSubmit'
+          'click button.submit': 'handleFormSubmit',
+          'click button.add': 'handleAddItem',
+          'click a.delete': 'handleRemoveItem'
         },
 
         $list: null,
@@ -43,11 +45,12 @@ define(['jquery', 'underscore', 'backbone', 'text!templates/index.html'],
             this.addItem(list[i]);
           }
 
-          wrapper.append('<button type="submit">All good?</button>');
+          wrapper.append('<button class="add">Add item</button>');
+          wrapper.append('<button class="submit">Start!</button>');
         },
 
         addItem: function (item) {
-          this.$list.append('<li><input type="text" value="' + item + '" /></li>');
+          this.$list.append('<li><input type="text" value="' + item + '" /><a class="delete">X</a></li>');
         },
 
         handleFormSubmit: function () {
@@ -56,6 +59,15 @@ define(['jquery', 'underscore', 'backbone', 'text!templates/index.html'],
             list.push(item.value);
           });
           this.trigger(IndexView.EV_LIST_READY, list);
+        },
+
+        handleRemoveItem: function (e) {
+          var li = e.currentTarget.parentNode;
+          li.parentNode.removeChild(li);
+        },
+
+        handleAddItem: function () {
+          this.addItem('');
         }
       }, {
         EV_LIST_READY: 'list-ready'
