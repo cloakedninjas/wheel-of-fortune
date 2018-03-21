@@ -18,6 +18,8 @@ define(['jquery', 'underscore', 'backbone', 'text!templates/wheel.html'], functi
     wheelRadius: 0,
     generatedWheel: null,
     velocity: 0,
+    prevLabel: null,
+    audio: null,
 
     initialize: function (items) {
       this.items = items;
@@ -25,6 +27,7 @@ define(['jquery', 'underscore', 'backbone', 'text!templates/wheel.html'], functi
 
       this.render();
 
+      this.audio = document.getElementById('audio');
       this.canvas = document.getElementById('wheel');
       this.ctx = this.canvas.getContext('2d');
 
@@ -54,7 +57,11 @@ define(['jquery', 'underscore', 'backbone', 'text!templates/wheel.html'], functi
     ROTATION_SPEED: 0.05,
 
     spin: function () {
-      this.velocity = 100;
+      this.velocity += 20;
+
+      if (this.velocity > WheelView.MAX_VELOCITY) {
+        this.velocity = WheelView.MAX_VELOCITY;
+      }
     },
 
     render: function () {
@@ -93,7 +100,17 @@ define(['jquery', 'underscore', 'backbone', 'text!templates/wheel.html'], functi
       // draw num
       this.ctx.fillStyle = "#000";
       this.ctx.font = '32px Arial';
-      this.ctx.fillText(this.getNumberFromRotation(), 20, 40);
+
+      var currentLabel = this.getLabelFromRotation();
+
+      if (this.prevLabel !== currentLabel) {
+        // play sound?
+        this.audio.currentTime = 0;
+        this.audio.play();
+      }
+
+      this.prevLabel = currentLabel;
+      this.ctx.fillText(currentLabel, 20, 40);
 
       window.requestAnimationFrame(this.animate.bind(this));
     },
@@ -164,7 +181,7 @@ define(['jquery', 'underscore', 'backbone', 'text!templates/wheel.html'], functi
       }
     },
 
-    getNumberFromRotation: function () {
+    getLabelFromRotation: function () {
       var i = Math.floor(this.rotation / this.arcSize);
       return this.items[this.numOfSegments - 1 - i];
     },
@@ -193,7 +210,8 @@ define(['jquery', 'underscore', 'backbone', 'text!templates/wheel.html'], functi
     }
 
   }, {
-    PI_2: Math.PI * 2
+    PI_2: Math.PI * 2,
+    MAX_VELOCITY: 300
   });
 
   return WheelView;
