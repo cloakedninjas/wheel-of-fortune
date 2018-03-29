@@ -57,7 +57,7 @@ define(['jquery', 'underscore', 'backbone', 'text!templates/wheel.html'], functi
     ROTATION_SPEED: 0.05,
 
     spin: function () {
-      this.velocity += 20;
+      this.velocity += 5 + Math.random() * 15;
 
       if (this.velocity > WheelView.MAX_VELOCITY) {
         this.velocity = WheelView.MAX_VELOCITY;
@@ -83,7 +83,7 @@ define(['jquery', 'underscore', 'backbone', 'text!templates/wheel.html'], functi
       if (this.velocity > 0) {
         this.rotation += (this.velocity * this.ROTATION_SPEED) / 100;
         this.rotation = this.rotation % WheelView.PI_2;
-        this.velocity -= 0.25;
+        this.velocity -= 0.2;
       }
 
       this.ctx.restore();
@@ -99,14 +99,15 @@ define(['jquery', 'underscore', 'backbone', 'text!templates/wheel.html'], functi
 
       // draw num
       this.ctx.fillStyle = "#000";
-      this.ctx.font = '32px Arial';
+      this.ctx.font = '32px Open Sans';
 
       var currentLabel = this.getLabelFromRotation();
 
       if (this.prevLabel !== currentLabel) {
         // play sound?
-        this.audio.currentTime = 0;
-        this.audio.play();
+        // this.audio.currentTime = 0;
+        // this.audio.play();
+        this.velocity -= 0.5;
       }
 
       this.prevLabel = currentLabel;
@@ -146,7 +147,7 @@ define(['jquery', 'underscore', 'backbone', 'text!templates/wheel.html'], functi
         ctx.fillStyle = "#ffffff";
         ctx.textAlign = "right";
         ctx.textBaseline = "middle";
-        ctx.font = '16px Arial';
+        ctx.font = '16px Open Sans';
         ctx.fillText(this.items[i], 0, 0);
 
         ctx.restore();

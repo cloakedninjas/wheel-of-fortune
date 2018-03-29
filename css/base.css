@@ -3,12 +3,21 @@ html, body {
     padding: 0;
     width: 100%;
 
-    font-family: arial, sans-serif;
+    font-family: 'Lobster', cursive;
     font-size: 12px;
+    user-select: none;
 }
 
 h1 {
+    margin: 12px 0;
+    font-size: 46px;
     text-align: center;
+    color: #FFAB15;
+    filter: drop-shadow(2px 2px 2px grey);
+}
+
+h2 {
+    font-family: Open Sans, sans-serif;
 }
 
 canvas {
@@ -17,4 +26,8 @@ canvas {
 
 .wrapper {
     padding: 20px;
+}
+
+#items {
+    font-family: arial, sans-serif;
 }
