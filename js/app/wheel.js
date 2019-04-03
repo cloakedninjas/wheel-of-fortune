@@ -107,7 +107,7 @@ define(['jquery', 'underscore', 'backbone', 'text!templates/wheel.html'], functi
         // play sound?
         // this.audio.currentTime = 0;
         // this.audio.play();
-        this.velocity -= 0.5;
+        this.velocity -= 0.8;
       }
 
       this.prevLabel = currentLabel;
