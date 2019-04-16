@@ -99,7 +99,7 @@ define(['jquery', 'underscore', 'backbone', 'text!templates/wheel.html'], functi
 
       // draw num
       this.ctx.fillStyle = "#000";
-      this.ctx.font = '32px Open Sans';
+      this.ctx.font = (32 * window.devicePixelRatio) + 'px Open Sans';
 
       var currentLabel = this.getLabelFromRotation();
 
@@ -111,6 +111,7 @@ define(['jquery', 'underscore', 'backbone', 'text!templates/wheel.html'], functi
       }
 
       this.prevLabel = currentLabel;
+      this.ctx.textBaseline = 'top';
       this.ctx.fillText(currentLabel, 20, 40);
 
       window.requestAnimationFrame(this.animate.bind(this));
@@ -147,7 +148,7 @@ define(['jquery', 'underscore', 'backbone', 'text!templates/wheel.html'], functi
         ctx.fillStyle = "#ffffff";
         ctx.textAlign = "right";
         ctx.textBaseline = "middle";
-        ctx.font = '16px Open Sans';
+        ctx.font = (16 * window.devicePixelRatio) + 'px Open Sans';
         ctx.fillText(this.items[i], 0, 0);
 
         ctx.restore();
